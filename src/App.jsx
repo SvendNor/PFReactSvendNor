@@ -11,12 +11,17 @@ import Testimonials from "./components/Testimonials/Testimonials";
 import Footer from "./components/Footer/Footer";
 import Popup from "./components/Popup/Popup";
 
+// Nuevos componentes
+import ItemListContainer from "./components/Item/ItemListContainer";
+import CheckOut from "./components/CheckOut/CheckOut";
+
 const App = () => {
   const [orderPopup, setOrderPopup] = React.useState(false);
 
   const handleOrderPopup = () => {
     setOrderPopup(!orderPopup);
   };
+
   React.useEffect(() => {
     AOS.init({
       offset: 100,
@@ -29,15 +34,28 @@ const App = () => {
 
   return (
     <div className="bg-white dark:bg-gray-900 dark:text-white duration-200">
+      {/* Navbar */}
       <Navbar handleOrderPopup={handleOrderPopup} />
+
+      {/* Hero Section */}
       <Hero handleOrderPopup={handleOrderPopup} />
+
+      {/* Productos */}
       <Products />
       <TopProducts handleOrderPopup={handleOrderPopup} />
+
+      {/* Nuevos Componentes */}
+      <ItemListContainer greeting="Bienvenidos a la Tienda Farah" />
+      <CheckOut />
+
+      {/* Otros Componentes */}
       <Banner />
       <Subscribe />
       <Products />
       <Testimonials />
       <Footer />
+
+      {/* Popup */}
       <Popup orderPopup={orderPopup} setOrderPopup={setOrderPopup} />
     </div>
   );
