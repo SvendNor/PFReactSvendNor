@@ -2,7 +2,7 @@ import React from "react";
 import Img1 from "../../assets/perfumes/kenzo.png";
 import Img2 from "../../assets/hero/medicamentos.png";
 import Img3 from "../../assets/Women/women2.jpg";
-import Img4 from "../../assets/women/women4.jpg";
+import Img4 from "../../assets/Women/women4.jpg";
 import { FaStar } from "react-icons/fa6";
 
 const ProductsData = [

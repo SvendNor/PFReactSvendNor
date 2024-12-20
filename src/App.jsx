@@ -1,4 +1,5 @@
 import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
 import Hero from "./components/Hero/Hero";
 import Products from "./components/Products/Products";
@@ -13,7 +14,10 @@ import Popup from "./components/Popup/Popup";
 
 // Nuevos componentes
 import ItemListContainer from "./components/Item/ItemListContainer";
-import CheckOut from "./components/CheckOut/CheckOut";
+import ItemDetailContainer from "./components/Item/ItemDetailContainer";
+import Cart from "./components/Cart/Cart"; // Componente del carrito
+import Checkout from "./components/Checkout/Checkout"; // Componente de checkout
+import { CartProvider } from "./context/CartContext";
 
 const App = () => {
   const [orderPopup, setOrderPopup] = React.useState(false);
@@ -33,31 +37,45 @@ const App = () => {
   }, []);
 
   return (
-    <div className="bg-white dark:bg-gray-900 dark:text-white duration-200">
-      {/* Navbar */}
-      <Navbar handleOrderPopup={handleOrderPopup} />
+    <CartProvider>
+      <Router>
+        <div className="bg-white dark:bg-gray-900 dark:text-white duration-200">
+          {/* Navbar */}
+          <Navbar handleOrderPopup={handleOrderPopup} />
 
-      {/* Hero Section */}
-      <Hero handleOrderPopup={handleOrderPopup} />
+          {/* Rutas */}
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <>
+                  {/* Hero Section */}
+                  <Hero handleOrderPopup={handleOrderPopup} />
+                  {/* Productos */}
+                  <Products />
+                  <TopProducts handleOrderPopup={handleOrderPopup} />
+                  <Banner />
+                  <Subscribe />
+                  <Products />
+                  <Testimonials />
+                  <Footer />
+                </>
+              }
+            />
+            <Route
+              path="/categoria/:id"
+              element={<ItemListContainer greeting="Bienvenidos a la Tienda Farah" />}
+            />
+            <Route path="/producto/:id" element={<ItemDetailContainer />} />
+            <Route path="/carrito" element={<Cart />} /> {/* Ruta del carrito */}
+            <Route path="/checkout" element={<Checkout />} /> {/* Ruta del checkout */}
+          </Routes>
 
-      {/* Productos */}
-      <Products />
-      <TopProducts handleOrderPopup={handleOrderPopup} />
-
-      {/* Nuevos Componentes */}
-      <ItemListContainer greeting="Bienvenidos a la Tienda Farah" />
-      <CheckOut />
-
-      {/* Otros Componentes */}
-      <Banner />
-      <Subscribe />
-      <Products />
-      <Testimonials />
-      <Footer />
-
-      {/* Popup */}
-      <Popup orderPopup={orderPopup} setOrderPopup={setOrderPopup} />
-    </div>
+          {/* Popup */}
+          <Popup orderPopup={orderPopup} setOrderPopup={setOrderPopup} />
+        </div>
+      </Router>
+    </CartProvider>
   );
 };
 
