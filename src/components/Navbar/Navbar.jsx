@@ -1,20 +1,35 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Logo from "../../assets/logo.png";
 import { IoMdSearch } from "react-icons/io";
 import DarkMode from "./DarkMode";
 import CartWidget from "./CartWidget";
 import { useCart } from "../../context/CartContext";
-
-const Menu = [
-  { id: 1, name: "Inicio", link: "/" },
-  { id: 2, name: "Perfumes", link: "/categoria/Perfumes" },
-  { id: 3, name: "Medicina", link: "/categoria/Medicina" },
-];
+import { collection, getDocs } from "firebase/firestore";
+import db from "../../firebase-config";
 
 const Navbar = () => {
-  const { cart, total } = useCart();
+  const { cart } = useCart();
   const location = useLocation();
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const categoriesRef = collection(db, "categories");
+        const snapshot = await getDocs(categoriesRef);
+        const categoriesList = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setCategories(categoriesList);
+      } catch (error) {
+        console.error("Error al cargar las categorías:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   return (
     <div className="shadow-md bg-white dark:bg-gray-900 dark:text-white duration-200 relative z-40">
@@ -38,11 +53,6 @@ const Navbar = () => {
             <div className="relative cursor-pointer">
               <Link to="/carrito" className="flex items-center gap-2">
                 <CartWidget />
-                {cart.length > 0 && (
-                  <span className="absolute top-0 right-0 bg-red-500 text-white rounded-full text-xs px-2 py-1">
-                    {cart.length}
-                  </span>
-                )}
               </Link>
             </div>
             <div>
@@ -53,13 +63,13 @@ const Navbar = () => {
       </div>
       <div data-aos="zoom-in" className="flex justify-center">
         <ul className="sm:flex hidden items-center gap-4">
-          {Menu.map((data) => (
-            <li key={data.id}>
+          {categories.map((category) => (
+            <li key={category.id}>
               <Link
-                to={data.link}
+                to={category.link}
                 className="inline-block px-4 hover:text-primary duration-200"
               >
-                {data.name}
+                {category.name}
               </Link>
             </li>
           ))}
@@ -74,9 +84,9 @@ const Navbar = () => {
                 {cart.map((item) => (
                   <li key={item.id} className="mb-2">
                     <span>
-                      {item.Nombre || item.Droga} x {item.quantity}
+                      {item.nombre} x {item.quantity}
                     </span>
-                    <span className="block">${item.Precio * item.quantity}</span>
+                    <span className="block">${item.precio * item.quantity}</span>
                   </li>
                 ))}
               </ul>
@@ -84,7 +94,7 @@ const Navbar = () => {
               <p>El carrito está vacío</p>
             )}
             <div className="font-bold mt-4 border-t pt-2 text-xl">
-              Total: ${total}
+              Total: ${cart.reduce((total, item) => total + item.precio * item.quantity, 0)}
             </div>
           </div>
         </div>

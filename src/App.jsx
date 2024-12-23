@@ -11,12 +11,10 @@ import Subscribe from "./components/Subscribe/Subscribe";
 import Testimonials from "./components/Testimonials/Testimonials";
 import Footer from "./components/Footer/Footer";
 import Popup from "./components/Popup/Popup";
-
-// Nuevos componentes
 import ItemListContainer from "./components/Item/ItemListContainer";
 import ItemDetailContainer from "./components/Item/ItemDetailContainer";
-import Cart from "./components/Cart/Cart"; // Componente del carrito
-import Checkout from "./components/Checkout/Checkout"; // Componente de checkout
+import Cart from "./components/Cart/Cart";
+import Checkout from "./components/Checkout/Checkout";
 import { CartProvider } from "./context/CartContext";
 
 const App = () => {
@@ -40,18 +38,13 @@ const App = () => {
     <CartProvider>
       <Router>
         <div className="bg-white dark:bg-gray-900 dark:text-white duration-200">
-          {/* Navbar */}
           <Navbar handleOrderPopup={handleOrderPopup} />
-
-          {/* Rutas */}
           <Routes>
             <Route
               path="/"
               element={
                 <>
-                  {/* Hero Section */}
                   <Hero handleOrderPopup={handleOrderPopup} />
-                  {/* Productos */}
                   <Products />
                   <TopProducts handleOrderPopup={handleOrderPopup} />
                   <Banner />
@@ -67,11 +60,9 @@ const App = () => {
               element={<ItemListContainer greeting="Bienvenidos a la Tienda Farah" />}
             />
             <Route path="/producto/:id" element={<ItemDetailContainer />} />
-            <Route path="/carrito" element={<Cart />} /> {/* Ruta del carrito */}
-            <Route path="/checkout" element={<Checkout />} /> {/* Ruta del checkout */}
+            <Route path="/carrito" element={<Cart />} />
+            <Route path="/checkout" element={<Checkout />} />
           </Routes>
-
-          {/* Popup */}
           <Popup orderPopup={orderPopup} setOrderPopup={setOrderPopup} />
         </div>
       </Router>

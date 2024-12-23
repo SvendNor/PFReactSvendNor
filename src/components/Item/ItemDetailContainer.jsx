@@ -6,18 +6,27 @@ import ItemDetail from "./ItemDetail/ItemDetail";
 
 const ItemDetailContainer = () => {
   const [item, setItem] = useState(null);
-  const { id } = useParams(); // Obtenemos el ID del producto desde la URL
+  const { id } = useParams();
 
   useEffect(() => {
     const fetchItem = async () => {
       try {
-        const itemRef = doc(db, "products", id); // Cambia "products" al nombre de tu colección en Firestore
-        const snapshot = await getDoc(itemRef);
+        const collections = ["medicamentos", "perfumes"];
+        let foundItem = null;
 
-        if (snapshot.exists()) {
-          setItem({ id: snapshot.id, ...snapshot.data() });
+        for (const collection of collections) {
+          const itemRef = doc(db, collection, id);
+          const snapshot = await getDoc(itemRef);
+          if (snapshot.exists()) {
+            foundItem = { id: snapshot.id, ...snapshot.data() };
+            break;
+          }
+        }
+
+        if (foundItem) {
+          setItem(foundItem);
         } else {
-          console.error("El producto no existe");
+          console.error("El producto no existe en ninguna colección.");
         }
       } catch (error) {
         console.error("Error al obtener el producto:", error);
@@ -32,7 +41,7 @@ const ItemDetailContainer = () => {
       {item ? (
         <ItemDetail item={item} />
       ) : (
-        <p className="text-center text-lg">Cargando producto...</p>
+        <p className="text-center text-lg">El producto no existe o no está disponible.</p>
       )}
     </div>
   );
