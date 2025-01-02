@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import ItemQuantitySelector from "./ItemDetail/ItemQuantitySelector";
 import { Link } from "react-router-dom";
+import { useCart } from "../../context/CartContext";
 
-const Item = ({ item, onAddToCart }) => {
+const Item = ({ item }) => {
   const [quantity, setQuantity] = useState(1);
+  const { addToCart } = useCart();
 
   const handleQuantityChange = (newQuantity) => {
     setQuantity(newQuantity);
@@ -28,7 +30,7 @@ const Item = ({ item, onAddToCart }) => {
       <ItemQuantitySelector onQuantityChange={handleQuantityChange} />
       <div className="mt-4 flex gap-4">
         <button
-          onClick={() => onAddToCart({ ...item, quantity })}
+          onClick={() => addToCart({ ...item, quantity })}
           className="bg-primary text-white px-4 py-2 rounded hover:scale-105 duration-200"
         >
           Agregar al carrito

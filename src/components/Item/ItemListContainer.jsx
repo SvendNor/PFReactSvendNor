@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { collection, getDocs } from "firebase/firestore";
-import { useCart } from "../../context/CartContext";
 import db from "../../firebase-config";
 import ItemList from "./ItemList";
 
 const ItemListContainer = ({ greeting }) => {
   const [items, setItems] = useState([]);
   const { id } = useParams();
-  const { addToCart } = useCart();
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -40,7 +38,7 @@ const ItemListContainer = ({ greeting }) => {
     <div className="container mx-auto p-4">
       <h2 className="text-2xl font-bold mb-4">{greeting}</h2>
       {items.length > 0 ? (
-        <ItemList items={items} onAddToCart={addToCart} />
+        <ItemList items={items} />
       ) : (
         <p className="text-center text-lg">No se encontraron productos.</p>
       )}
