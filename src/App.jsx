@@ -15,6 +15,7 @@ import ItemListContainer from "./components/Item/ItemListContainer";
 import ItemDetailContainer from "./components/Item/ItemDetailContainer";
 import Cart from "./components/Cart/Cart";
 import Checkout from "./components/Checkout/Checkout";
+import AllProducts from "./components/Products/AllProducts";
 import { CartProvider } from "./context/CartContext";
 
 const App = () => {
@@ -62,6 +63,7 @@ const App = () => {
             <Route path="/producto/:id" element={<ItemDetailContainer />} />
             <Route path="/carrito" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/productos" element={<AllProducts />} />
           </Routes>
           <Popup orderPopup={orderPopup} setOrderPopup={setOrderPopup} />
         </div>

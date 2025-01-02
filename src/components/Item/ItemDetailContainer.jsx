@@ -9,6 +9,8 @@ const ItemDetailContainer = () => {
   const { id } = useParams();
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchItem = async () => {
       try {
         const collections = ["medicamentos", "perfumes"];
@@ -17,23 +19,40 @@ const ItemDetailContainer = () => {
         for (const collection of collections) {
           const itemRef = doc(db, collection, id);
           const snapshot = await getDoc(itemRef);
+
           if (snapshot.exists()) {
-            foundItem = { id: snapshot.id, ...snapshot.data() };
+            const data = snapshot.data();
+
+            foundItem = {
+              id: snapshot.id,
+              name: data.nombre,
+              price: data.precio,
+              stock: data.stock,
+              brand: collection === "perfumes" ? data.marca : data.droga,
+            };
             break;
           }
         }
 
-        if (foundItem) {
-          setItem(foundItem);
-        } else {
-          console.error("El producto no existe en ninguna colección.");
+        if (isMounted) {
+          if (foundItem) {
+            setItem(foundItem);
+          } else {
+            console.error("El producto no existe en ninguna colección.");
+          }
         }
       } catch (error) {
-        console.error("Error al obtener el producto:", error);
+        if (isMounted) {
+          console.error("Error al obtener el producto:", error);
+        }
       }
     };
 
     fetchItem();
+
+    return () => {
+      isMounted = false;
+    };
   }, [id]);
 
   return (

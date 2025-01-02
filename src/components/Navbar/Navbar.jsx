@@ -63,6 +63,15 @@ const Navbar = () => {
       </div>
       <div data-aos="zoom-in" className="flex justify-center">
         <ul className="sm:flex hidden items-center gap-4">
+          {/* Nuevo enlace para 'Productos' */}
+          <li>
+            <Link
+              to="/productos"
+              className="inline-block px-4 hover:text-primary duration-200"
+            >
+              Productos
+            </Link>
+          </li>
           {categories.map((category) => (
             <li key={category.id}>
               <Link

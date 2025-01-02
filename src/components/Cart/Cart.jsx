@@ -1,11 +1,53 @@
 import React from "react";
 import { useCart } from "../../context/CartContext";
+import { collection, addDoc, doc, updateDoc } from "firebase/firestore";
+import db from "../../firebase-config";
 
 const Cart = () => {
   const { cart, removeFromCart, clearCart } = useCart();
 
   const calculateTotal = () => {
     return cart.reduce((total, item) => total + item.precio * item.quantity, 0);
+  };
+
+  const handleCheckout = async () => {
+    try {
+      // Crear la orden
+      const order = {
+        items: cart.map((item) => ({
+          id: item.id,
+          name: item.nombre,
+          quantity: item.quantity,
+          price: item.precio,
+        })),
+        total: calculateTotal(),
+        date: new Date().toISOString(),
+      };
+
+      // Guardar la orden en Firestore
+      const docRef = await addDoc(collection(db, "orders"), order);
+
+      // Actualizar el stock en Firebase
+      const updateStockPromises = cart.map(async (item) => {
+        const collectionName = item.marca ? "perfumes" : "medicamentos"; // Determinar la colección
+        const itemRef = doc(db, collectionName, item.id);
+        await updateDoc(itemRef, {
+          stock: item.stock - item.quantity,
+        });
+      });
+
+      // Esperar a que todos los productos sean actualizados
+      await Promise.all(updateStockPromises);
+
+      // Vaciar el carrito
+      clearCart();
+
+      // Mostrar mensaje de confirmación
+      alert(`Compra finalizada con éxito. ID de la orden: ${docRef.id}`);
+    } catch (error) {
+      console.error("Error al finalizar la compra:", error);
+      alert("Hubo un error al procesar tu compra. Inténtalo nuevamente.");
+    }
   };
 
   return (
@@ -53,7 +95,10 @@ const Cart = () => {
             >
               Vaciar Carrito
             </button>
-            <button className="bg-primary text-white px-4 py-2 rounded">
+            <button
+              onClick={handleCheckout}
+              className="bg-primary text-white px-4 py-2 rounded"
+            >
               Finalizar Compra
             </button>
           </div>
